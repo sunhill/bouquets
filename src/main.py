@@ -1,5 +1,6 @@
 from bouquet_maker import BouquetMaker
 
+Sim
 def bouquet_maker():
     try:
         print("Starting bouquet maker...")
@@ -10,7 +11,5 @@ def bouquet_maker():
         print("Exiting bouquet maker...")
 
 
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     bouquet_maker()

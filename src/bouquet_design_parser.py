@@ -1,7 +1,6 @@
 import re
 
 from bouquet_design import BouquetDesign
-from flower import Flower
 
 
 class BouquetDesignParser:
@@ -21,7 +20,7 @@ class BouquetDesignParser:
         name = design_str[0]
         flower_size = design_str[1]
 
-        # Find the last number before 't'
+        # Find the last number for the total quantity
         match = re.search(r'(\d+$)', design_str)
         if not match:
             raise ValueError("No total quantity found")
@@ -39,14 +38,6 @@ class BouquetDesignParser:
             flowers[flower] = int(max_qty)
 
         return BouquetDesign(name, flower_size, total_qty, flowers)
-
-    @staticmethod
-    def parse_flower_string(flower_str) -> Flower:
-        if len(flower_str) < 2:
-            raise ValueError("Flower string must be at least 2 characters long")
-        species = flower_str[0]
-        size = flower_str[1]
-        return Flower(species, size)
 
 
 if __name__ == "__main__":

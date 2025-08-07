@@ -1,3 +1,5 @@
+import collections
+
 from bouquet import Bouquet
 from bouquet_design import BouquetDesign
 from bouquet_design_parser import BouquetDesignParser
@@ -8,7 +10,7 @@ class BouquetMaker:
         self.bouquet_designs: list[BouquetDesign] = []
         self.bouquet_design_parser = BouquetDesignParser()
         self.bouquets = []
-        self.flower_count: dict = {}  # Map to track available flowers by species
+        self.flower_count: dict = collections.defaultdict(int)
 
     def run(self):
         print("Bouquet Maker is running...")
@@ -17,31 +19,30 @@ class BouquetMaker:
         try:
             self.bouquet_design_loop()
 
-            self.flower_loop()
+            self.flower_match_loop()
 
         except EOFError:
             print("EOFError encountered. Exiting bouquet maker.")
 
-    def flower_loop(self):
+    def flower_match_loop(self):
         while True:
             user_input = input()
             if not user_input.strip():
-                break
-            print(f"Received flower: {user_input}")
-            flower = BouquetDesignParser.parse_flower_string(user_input)
-            if not flower.species or not flower.size:
-                print("Invalid flower input. Please provide a valid species and size.")
+                print("No input received")
                 continue
-            flower = f"{flower.species}{flower.size}"
-
-            # Check if the flower species is already in the count map
-            if flower not in self.flower_count:
-                self.flower_count[flower] = 0
+            if len(user_input.strip()) < 2:
+                print("Flower input must be at least 2 characters long (species and size).")
+                continue
+            if user_input.strip()[1] not in ['S', 'L']:
+                print("Flower size must be 'S' or 'L'.")
+                continue
+            if not (user_input.strip()[0].isalpha() and user_input.strip()[0].islower()):
+                print("Flower species must be a lowercase alphabetic character.")
+                continue
+            flower = user_input.strip()
+            print(f"Received flower: {user_input}")
 
             self.flower_count[flower] += 1
-
-            for flower in self.flower_count.keys():
-                print(f"Flower {flower} count: {self.flower_count[flower]}")
 
             bouquet = self.match()
             if bouquet:
@@ -101,22 +102,16 @@ class BouquetMaker:
             if bouquet_total_remaining <= 0:
                 break
             flower_max_qty = bouquet_design.flowers[flower] - 1
-            # if flower_max_qty is greater than the available flowers, use all available flowers
             if flower_max_qty > self.flower_count[flower]:
                 if bouquet_total_remaining < self.flower_count[flower]:
-                    # fill the bouquet
                     bouquet_flower_count += bouquet_total_remaining
                 else:
-                    # use all available flowers
                     bouquet_flower_count += self.flower_count[flower]
             else:
                 if bouquet_total_remaining < flower_max_qty:
-                    # fill the bouquet
                     bouquet_flower_count += bouquet_total_remaining
                 else:
-                    # use the maximum quantity
                     bouquet_flower_count += flower_max_qty
-
 
             bouquet_flowers[flower] += bouquet_flower_count
             bouquet_total_remaining -= bouquet_flower_count
