@@ -1,4 +1,4 @@
-from typing import List
+from flower import Flower
 
 
 class FlowerSpec:
@@ -6,6 +6,7 @@ class FlowerSpec:
         self.species = species
         self.size = size
         self.max_qty = max_qty
+        self.flower = Flower(species, size)
 
     def __repr__(self):
         return f"FlowerSpec(species={self.species}, size={self.size}, max_qty={self.max_qty})"
@@ -25,8 +26,8 @@ class FlowerSpec:
 
 
 class BouquetDesign:
-    def __init__(self, name: str, flower_size: str, total_qty: int, flowers: List[FlowerSpec]):
-        self.flowers = flowers
+    def __init__(self, name: str, flower_size: str, total_qty: int, flowers: dict):
+        self.flowers: dict[str, int] = flowers
         self.name = name
         self.flower_size = flower_size
         self.total_qty = total_qty
@@ -37,14 +38,3 @@ class BouquetDesign:
 
     def __str__(self):
         return f"{self.name} ({self.flower_size}) - Total: {self.total_qty} Flowers: {', '.join(str(f) for f in self.flowers)}"
-
-    def __eq__(self, other):
-        if not isinstance(other, BouquetDesign):
-            return NotImplemented
-        return (self.name == other.name and
-                self.flower_size == other.flower_size and
-                self.total_qty == other.total_qty and
-                self.flowers == other.flowers)
-
-    def __hash__(self):
-        return hash((self.name, self.flower_size, self.total_qty, tuple(self.flowers)))

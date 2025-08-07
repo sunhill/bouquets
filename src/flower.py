@@ -1,6 +1,8 @@
 
 class Flower:
     def __init__(self, species:str, size: str):
-        # TODO add validation for species and size if needed
         self.species = species
         self.size = size
+
+    def __str__(self):
+        return f"{self.species}{self.size}"
