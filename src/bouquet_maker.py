@@ -76,13 +76,12 @@ class BouquetMaker:
                 print(f"Flower {flower} not available for bouquet {bouquet_design.name}")
                 bouquet_match = False
                 break
-            if self.flower_count[flower] < bouquet_design.flowers[flower]:
+            if self.flower_count[flower] < 1:
                 print(f"Not enough flowers available for bouquet {bouquet_design.name} of flower {flower}")
                 bouquet_match = False
                 break
-            flower_count = flower_count + bouquet_design.flowers[flower]
+            flower_count = flower_count + self.flower_count[flower]
         if bouquet_match and bouquet_design.total_qty > flower_count:
-            # not enough flowers!
             print(f"Not enough flowers available for bouquet {bouquet_design.name}")
             bouquet_match = False
         return bouquet_match
@@ -97,15 +96,31 @@ class BouquetMaker:
             bouquet_total_remaining -= bouquet_flowers[flower]
             self.flower_count[flower] = self.flower_count[flower] - 1
 
+        bouquet_flower_count = 0
         for flower in bouquet_design.flowers.keys():
-            flower_max_qty = bouquet_design.flowers[flower]
+            if bouquet_total_remaining <= 0:
+                break
+            flower_max_qty = bouquet_design.flowers[flower] - 1
+            # if flower_max_qty is greater than the available flowers, use all available flowers
             if flower_max_qty > self.flower_count[flower]:
-                bouquet_flower_count = (self.flower_count[flower])
+                if bouquet_total_remaining < self.flower_count[flower]:
+                    # fill the bouquet
+                    bouquet_flower_count += bouquet_total_remaining
+                else:
+                    # use all available flowers
+                    bouquet_flower_count += self.flower_count[flower]
             else:
-                bouquet_flower_count = (self.flower_count[flower]) - flower_max_qty
-            bouquet_flowers[flower] = bouquet_flowers[flower] + bouquet_flower_count
-            bouquet_total_remaining = bouquet_total_remaining - bouquet_flower_count
-            self.flower_count[flower] = self.flower_count[flower] - bouquet_flower_count
+                if bouquet_total_remaining < flower_max_qty:
+                    # fill the bouquet
+                    bouquet_flower_count += bouquet_total_remaining
+                else:
+                    # use the maximum quantity
+                    bouquet_flower_count += flower_max_qty
+
+
+            bouquet_flowers[flower] += bouquet_flower_count
+            bouquet_total_remaining -= bouquet_flower_count
+            self.flower_count[flower] -= bouquet_flower_count
 
         bouquet = Bouquet(bouquet_design, bouquet_flowers)
         print(f"Bouquet {bouquet_design.name} successfully matched.")
