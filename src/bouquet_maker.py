@@ -14,18 +14,19 @@ class BouquetMaker:
         print("Bouquet Maker is running...")
 
         print("Please enter bouquet designs (type Ctrl+C to exit):")
+        try:
+            self.bouquet_design_loop()
 
-        # designs input loop
+            self.flower_loop()
+
+        except EOFError:
+            print("EOFError encountered. Exiting bouquet maker.")
+
+    def flower_loop(self):
         while True:
             user_input = input()
             if not user_input.strip():
                 break
-            print(f"Received bouquet design: {user_input}")
-            self.bouquet_designs.append(self.bouquet_design_parser.parse_design_string(user_input))
-
-        # flowers input loop
-        while True:
-            user_input = input()
             print(f"Received flower: {user_input}")
             flower = BouquetDesignParser.parse_flower_string(user_input)
             if not flower.species or not flower.size:
@@ -46,6 +47,14 @@ class BouquetMaker:
             if bouquet:
                 self.bouquets.append(bouquet)
                 print(bouquet)
+
+    def bouquet_design_loop(self):
+        while True:
+            user_input = input()
+            if not user_input.strip():
+                break
+            print(f"Received bouquet design: {user_input}")
+            self.bouquet_designs.append(self.bouquet_design_parser.parse_design_string(user_input))
 
     def match(self) -> Bouquet | None:
 
