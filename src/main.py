@@ -1,6 +1,5 @@
 from bouquet_maker import BouquetMaker
 
-Sim
 def bouquet_maker():
     try:
         print("Starting bouquet maker...")
