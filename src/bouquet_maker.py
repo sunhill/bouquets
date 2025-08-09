@@ -69,7 +69,7 @@ class BouquetMaker:
 
         return None
 
-    def match_bouquet(self, bouquet_design: BouquetDesign):
+    def match_bouquet(self, bouquet_design: BouquetDesign)-> bool:
         bouquet_match = True
         flower_count = 0
         for flower in bouquet_design.flowers.keys():
@@ -89,33 +89,25 @@ class BouquetMaker:
 
     def make_bouquet(self, bouquet_design: BouquetDesign) -> Bouquet:
         bouquet_flowers: dict[str, int] = {}
-        bouquet_total_remaining: int = bouquet_design.total_qty
+        remaining_qty: int = bouquet_design.total_qty
 
         # ensure at least 1 of each flower
         for flower in bouquet_design.flowers.keys():
             bouquet_flowers[flower] = 1
-            bouquet_total_remaining -= bouquet_flowers[flower]
-            self.flower_count[flower] = self.flower_count[flower] - 1
+            remaining_qty -= 1
+            self.flower_count[flower] -= 1
 
-        bouquet_flower_count = 0
-        for flower in bouquet_design.flowers.keys():
-            if bouquet_total_remaining <= 0:
+        for flower,max_qty in bouquet_design.flowers.items():
+            if remaining_qty <= 0:
                 break
-            flower_max_qty = bouquet_design.flowers[flower] - 1
-            if flower_max_qty > self.flower_count[flower]:
-                if bouquet_total_remaining < self.flower_count[flower]:
-                    bouquet_flower_count += bouquet_total_remaining
-                else:
-                    bouquet_flower_count += self.flower_count[flower]
-            else:
-                if bouquet_total_remaining < flower_max_qty:
-                    bouquet_flower_count += bouquet_total_remaining
-                else:
-                    bouquet_flower_count += flower_max_qty
 
-            bouquet_flowers[flower] += bouquet_flower_count
-            bouquet_total_remaining -= bouquet_flower_count
-            self.flower_count[flower] -= bouquet_flower_count
+            available = self.flower_count[flower]
+            allowed = max_qty - 1
+            to_add = min(available, allowed, remaining_qty)
+
+            bouquet_flowers[flower] += to_add
+            remaining_qty -= to_add
+            self.flower_count[flower] -= to_add
 
         bouquet = Bouquet(bouquet_design, bouquet_flowers)
         print(f"Bouquet {bouquet_design.name} successfully matched.")

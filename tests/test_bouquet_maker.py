@@ -1,6 +1,6 @@
 import pytest
 from bouquet_design import BouquetDesign
-from bouquet_maker import BouquetMaker
+from bouquet_maker3 import BouquetMaker
 
 bouquet_design_1 = BouquetDesign('A', 'L', 3, {"aL": 2, "bL": 2})
 bouquet_design_2 = BouquetDesign('B', 'S', 2, {"aS": 2})

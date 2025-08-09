@@ -28,15 +28,15 @@ class TestCLIApplication(TestCase):
         expected_output.append("AS2a1b")
 
         result = subprocess.run(
-            [sys.executable, script_path],
+            [sys.executable,"-u", script_path],
             input=input_data.encode(),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            # check=True
+            check=True
         )
 
-        # print("STDOUT:", result.stdout.decode())
-        # print("STDERR:", result.stderr.decode())
+        print("STDOUT:", result.stdout.decode())
+        print("STDERR:", result.stderr.decode())
         assert result.returncode == 0  # Optional: check exit code
         self.assertEqual(result.returncode,0)
 

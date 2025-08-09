@@ -38,8 +38,3 @@ class BouquetDesignParser:
             flowers[flower] = int(max_qty)
 
         return BouquetDesign(name, flower_size, total_qty, flowers)
-
-
-if __name__ == "__main__":
-    # Example usage
-    BouquetDesignParser.parse_design_string("AL1d2r3t")
